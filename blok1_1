@@ -1,0 +1,88 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+void snakeToCamel(char* word, char separator = '_') {
+    if (strlen(word) == 0) {
+        throw invalid_argument("Podany tekst jest pusty.");
+    }
+
+    bool capitalizeNext = false;
+    int writeIndex = 0;
+
+    for (int i=0; word[i] != '\0'; i++) {
+        if (word[i] == separator) {
+            capitalizeNext = true;
+        }
+        else {
+            if (capitalizeNext) {
+                word[writeIndex++] = toupper(word[i]);
+                capitalizeNext = false;
+            }
+            else {
+                word[writeIndex++] = word[i];
+            }
+        }
+    }
+
+    word[writeIndex++] = '\0';
+}
+
+void testUnderscoreSeparator() {
+    const int SIZE = 100;
+    char word[SIZE] = "to_jest_zapis";
+    snakeToCamel(word);
+    cerr << "Test: separator _ :" << endl;
+    if (strcmp(word, "toJestZapis") != 0) {
+        cerr << "error" << endl;
+    }
+    else {
+        cerr << "Dziala" << endl;
+    }
+}
+
+void testDashSeparator() {
+    const int SIZE = 100;
+    char word[SIZE] = "to-jest-zapis";
+    snakeToCamel(word, '-');
+    cerr << "Test: separator - :" << endl;
+    if (strcmp(word, "toJestZapis") != 0) {
+        cerr << "error" << endl;
+    }
+    else {
+        cerr << "Dziala" << endl;
+    }
+}
+
+void testSingleWord() {
+    const int SIZE = 100;
+    char word[SIZE] = "zapis";
+    snakeToCamel(word);
+    cerr << "Test: pojedyncze slowo: " << endl;
+    if (strcmp(word, "zapis") != 0) {
+        cerr << "error" << endl;
+    }
+    else {
+        cerr << "Dziala" << endl;
+    }
+}
+
+void testEmptyText() {
+    const int SIZE = 100;
+    char word[SIZE] = "";
+    cerr << "Test: brak tekstu: " << endl;
+    try {
+        snakeToCamel(word);
+        cerr << "error, brak wyjatku" << endl;
+    } catch (invalid_argument) {
+        cerr << "Dziala" << endl;
+    }
+}
+
+int main() {
+    testUnderscoreSeparator();
+    testDashSeparator();
+    testSingleWord();
+    testEmptyText();
+}
